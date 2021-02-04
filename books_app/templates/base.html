@@ -6,6 +6,9 @@
     </head>
     <body>
         <div id="content">
+            {% for message in get_flashed_messages() %}
+                <p>{{ message }}</p>
+            {% endfor %}
             <a href="/">Home</a>
             {% block content %}{% endblock %}
         </div>
