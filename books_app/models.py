@@ -3,11 +3,20 @@ from books_app import db
 from sqlalchemy.orm import backref
 import enum
 
-class Audience(enum.Enum):
-    CHILDREN = 1
-    YOUNG_ADULT = 2
-    ADULT = 3
-    ALL = 4
+class FormEnum(enum.Enum):
+    """Helper class to make it easier to use enums with forms."""
+    @classmethod
+    def choices(cls):
+        return [(choice.name, choice) for choice in cls]
+
+    def __str__(self):
+        return str(self.value)
+
+class Audience(FormEnum):
+    CHILDREN = 'Children'
+    YOUNG_ADULT = 'Young Adult'
+    ADULT = 'Adult'
+    ALL = 'All'
 
 class Book(db.Model):
     """Book model."""
@@ -23,7 +32,12 @@ class Book(db.Model):
     audience = db.Column(db.Enum(Audience), default=Audience.ALL)
 
     # The genres, e.g. fiction, sci-fi, fantasy
-    genres = db.relationship('Genre', secondary='book_genre', back_populates='books')
+    genres = db.relationship(
+        'Genre', secondary='book_genre', back_populates='books')
+
+    # Who favorited this book?
+    users_who_favorited = db.relationship(
+        'User', secondary='user_book', back_populates='favorite_books')
 
     def __str__(self):
         return f'<Book: {self.title}>'
@@ -35,6 +49,7 @@ class Author(db.Model):
     """Author model."""
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80), nullable=False)
+    biography = db.Column(db.String(200))
     books = db.relationship('Book', back_populates='author')
 
     def __str__(self):
@@ -47,7 +62,8 @@ class Genre(db.Model):
     """Genre model."""
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80), nullable=False, unique=True)
-    books = db.relationship('Book', secondary='book_genre', back_populates='genres')
+    books = db.relationship(
+        'Book', secondary='book_genre', back_populates='genres')
 
     def __str__(self):
         return f'<Genre: {self.name}>'
@@ -58,4 +74,15 @@ class Genre(db.Model):
 book_genre_table = db.Table('book_genre',
     db.Column('book_id', db.Integer, db.ForeignKey('book.id')),
     db.Column('genre_id', db.Integer, db.ForeignKey('genre.id'))
+)
+
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(80), nullable=False, unique=True)
+    favorite_books = db.relationship(
+        'Book', secondary='user_book', back_populates='users_who_favorited')
+
+favorite_books_table = db.Table('user_book',
+    db.Column('book_id', db.Integer, db.ForeignKey('book.id')),
+    db.Column('user_id', db.Integer, db.ForeignKey('user.id'))
 )

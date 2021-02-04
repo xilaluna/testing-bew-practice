@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<form method="POST" action="{{ url_for('main.create_book') }}">
+    {{ form.csrf_token }}
+    <fieldset>
+        <legend>Enter a book</legend>
+
+        {{ form.title.label }}
+        {{ form.title }}
+        
+        {{ form.publish_date.label }}
+        {{ form.publish_date(placeholder="YYYY-mm-dd") }}
+        
+        {{ form.author.label }}
+        {{ form.author }}
+        
+        {{ form.audience.label }}
+        {{ form.audience }}
+        
+        {{ form.genres.label }}
+        {{ form.genres }}
+            
+        {{ form.submit }}
+    </fieldset>
+</form>
+
+{% endblock %}

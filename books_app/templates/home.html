@@ -2,8 +2,38 @@
 
 {% block content %}
 
-You are visiting the homepage.
+<h2>Books</h2>
 
-<!-- TODO: Display a list of users here, with each linking to their profile -->
+<p>
+    <a href="/create_book">+ New Book</a>
+</p>
+
+<p>
+    <a href="/create_author">+ New Author</a>
+</p>
+
+<p>
+    <a href="/create_genre">+ New Genre</a>
+</p>
+
+<ul>
+{% for book in all_books %}
+    <li><a href="/book/{{ book.id }}">{{ book.title }}</a> by {{ book.author.name }}</li>
+{% endfor %}
+</ul>
+
+<h2>Users</h2>
+
+<p>
+    <a href="/create_user">+ New User</a>
+</p>
+
+<ul>
+    {% for user in all_users %}
+        <li><a href="/profile/{{ user.username }}">{{ user.username }}</a></li>
+    {% endfor %}
+</ul>
+
+
 
 {% endblock %}
