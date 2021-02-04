@@ -32,7 +32,7 @@ python3 app.py
 
 **Take a look at the `books_app/forms.py` file**, which contains a form we'll use to collect user data on new books. The user can add a book's title, publish date, author, audience, and genres.
 
-**Take a look at the `books_app/routes.py` file**, and see how it's using the `BookForm` class. Namely, we create an instance of `BookForm` and pass it to the template. Then when the form is submitted, we use the data to create a new `Book` object and save it to the database.
+**Take a look at the `books_app/routes.py` file**, and see how the `create_book` route is using the `BookForm` class. Namely, we create an instance of `BookForm` and pass it to the template. Then when the form is submitted, we use the data to create a new `Book` object and save it to the database.
 
 Now, **run the server** and test out the routes. See if you can create a few new books. Notably, you'll only be able to select authors that have already been added to the database - but don't worry, we'll be able to add new authors soon!
 
