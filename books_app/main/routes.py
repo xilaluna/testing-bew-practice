@@ -1,9 +1,10 @@
 """Import packages and modules."""
-import os
 from flask import Blueprint, request, render_template, redirect, url_for, flash
+from flask_login import login_user, logout_user, login_required, current_user
 from datetime import date, datetime
 from books_app.models import Book, Author, Genre, User
-from books_app.forms import BookForm, AuthorForm, GenreForm
+from books_app.main.forms import BookForm, AuthorForm, GenreForm
+from books_app import bcrypt
 
 # Import app and db from events_app package so that we can run app
 from books_app import app, db
@@ -21,7 +22,9 @@ def homepage():
     return render_template('home.html', 
         all_books=all_books, all_users=all_users)
 
+
 @main.route('/create_book', methods=['GET', 'POST'])
+@login_required
 def create_book():
     form = BookForm()
 
@@ -41,7 +44,9 @@ def create_book():
         return redirect(url_for('main.book_detail', book_id=new_book.id))
     return render_template('create_book.html', form=form)
 
+
 @main.route('/create_author', methods=['GET', 'POST'])
+@login_required
 def create_author():
     # TODO: Make an AuthorForm instance
 
@@ -53,7 +58,9 @@ def create_author():
     # fields
     return render_template('create_author.html')
 
+
 @main.route('/create_genre', methods=['GET', 'POST'])
+@login_required
 def create_genre():
     # TODO: Make a GenreForm instance
 
@@ -65,10 +72,6 @@ def create_genre():
     # fields
     return render_template('create_genre.html')
 
-@main.route('/create_user', methods=['GET', 'POST'])
-def create_user():
-    # STRETCH CHALLENGE: Fill out the Create User route
-    return "Not Yet Implemented"
 
 @main.route('/book/<book_id>', methods=['GET', 'POST'])
 def book_detail(book_id):
@@ -81,6 +84,7 @@ def book_detail(book_id):
 
     return render_template('book_detail.html', book=book, form=form)
 
+
 @main.route('/profile/<username>')
 def profile(username):
     # TODO: Make a query for the user with the given username, and send to the
@@ -89,3 +93,31 @@ def profile(username):
     # STRETCH CHALLENGE: Add ability to modify a user's username or favorite 
     # books
     return render_template('profile.html', username=username)
+
+
+@main.route('/favorite/<book_id>', methods=['POST'])
+@login_required
+def favorite_book(book_id):
+    book = Book.query.get(book_id)
+    if book in current_user.favorite_books:
+        flash('Book already in favorites.')
+    else:
+        current_user.favorite_books.append(book)
+        db.session.add(current_user)
+        db.session.commit()
+        flash('Book added to favorites.')
+    return redirect(url_for('main.book_detail', book_id=book_id))
+
+
+@main.route('/unfavorite/<book_id>', methods=['POST'])
+@login_required
+def unfavorite_book(book_id):
+    book = Book.query.get(book_id)
+    if book not in current_user.favorite_books:
+        flash('Book not in favorites.')
+    else:
+        current_user.favorite_books.remove(book)
+        db.session.add(current_user)
+        db.session.commit()
+        flash('Book removed from favorites.')
+    return redirect(url_for('main.book_detail', book_id=book_id))

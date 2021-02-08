@@ -1,6 +1,7 @@
 """Create database models to represent tables."""
 from books_app import db
 from sqlalchemy.orm import backref
+from flask_login import UserMixin
 import enum
 
 class FormEnum(enum.Enum):
@@ -76,9 +77,10 @@ book_genre_table = db.Table('book_genre',
     db.Column('genre_id', db.Integer, db.ForeignKey('genre.id'))
 )
 
-class User(db.Model):
+class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), nullable=False, unique=True)
+    password = db.Column(db.String(200), nullable=False)
     favorite_books = db.relationship(
         'Book', secondary='user_book', back_populates='users_who_favorited')
 

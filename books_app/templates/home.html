@@ -4,18 +4,6 @@
 
 <h2>Books</h2>
 
-<p>
-    <a href="/create_book">+ New Book</a>
-</p>
-
-<p>
-    <a href="/create_author">+ New Author</a>
-</p>
-
-<p>
-    <a href="/create_genre">+ New Genre</a>
-</p>
-
 <ul>
 {% for book in all_books %}
     <li><a href="/book/{{ book.id }}">{{ book.title }}</a> by {{ book.author.name }}</li>
