@@ -84,6 +84,9 @@ class User(UserMixin, db.Model):
     favorite_books = db.relationship(
         'Book', secondary='user_book', back_populates='users_who_favorited')
 
+    def __repr__(self):
+        return f'<User: {self.username}>'
+
 favorite_books_table = db.Table('user_book',
     db.Column('book_id', db.Integer, db.ForeignKey('book.id')),
     db.Column('user_id', db.Integer, db.ForeignKey('user.id'))

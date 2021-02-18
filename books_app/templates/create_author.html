@@ -4,6 +4,30 @@
 
 <p>Author creation form.</p>
 
-<!-- TODO: Add a <form> element here and use the form variable to show the labels & fields -->
+<form method="POST" action="{{ url_for('main.create_author') }}">
+    {{ form.csrf_token }}
+    <fieldset>
+        <legend>Enter an author</legend>
+
+        {{ form.name.label }}
+        {{ form.name }}
+        <ul>
+        {% for error in form.name.errors %}
+            <li class="error">{{ error }}</li>
+        {% endfor %}
+        </ul>
+
+        {{ form.biography.label }}
+        {{ form.biography }}
+        <ul>
+        {% for error in form.biography.errors %}
+            <li class="error">{{ error }}</li>
+        {% endfor %}
+        </ul>
+            
+        {{ form.submit }}
+    </fieldset>
+</form>
+
 
 {% endblock %}
