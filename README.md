@@ -1,4 +1,4 @@
-# Lab - Books App Part 4 (Tests)
+# Books App Part 4 (Tests)
 
 ## Why should I do this?
 
