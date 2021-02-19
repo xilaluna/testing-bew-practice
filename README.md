@@ -1,9 +1,5 @@
 # Books App Part 4 (Tests)
 
-## Why should I do this?
-
-This lab will guide you through writing route tests for an existing codebase.
-
 ## Setup
 
 Clone this repository to your computer. 
