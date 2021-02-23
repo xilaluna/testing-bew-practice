@@ -1,8 +1,4 @@
-# Lab - Books App Part 3 (Tests)
-
-## Why should I do this?
-
-This lab will guide you through writing route tests for an existing codebase.
+# Books App Part 4 (Tests)
 
 ## Setup
 
@@ -16,10 +12,10 @@ Clone this repository to your computer.
 pip3 install -r requirements.txt
 ```
 
-Then, rename the `.env.example` file to `.env`:
+Then, copy the `.env.example` file to `.env`:
 
 ```
-mv .env.example .env
+cp .env.example .env
 ```
 
 Then you can run the following to run the Flask server:
