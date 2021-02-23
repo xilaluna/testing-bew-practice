@@ -59,7 +59,7 @@ class AuthTests(TestCase):
         # TODO: Write a test for the login route. It should:
         # - Create a user
         # - Make a POST request to /login, sending the created username & password
-        # - Check that the user's name is now displayed on the homepage
+        # - Check that the "login" button is not displayed on the homepage
         pass
 
     def test_login_nonexistent_user(self):
@@ -83,5 +83,5 @@ class AuthTests(TestCase):
         # - Create a user
         # - Log the user in (make a POST request to /login)
         # - Make a GET request to /logout
-        # - Check that the user's name does not appear on the homepage
+        # - Check that the "login" button appears on the homepage
         pass

@@ -89,7 +89,7 @@ def book_detail(book_id):
     form = BookForm(obj=book)
     
     # if form was submitted and contained no errors
-    if form.validate_on_submit(): 
+    if form.validate_on_submit():
         book.title = form.title.data
         book.publish_date = form.publish_date.data
         book.author = form.author.data
