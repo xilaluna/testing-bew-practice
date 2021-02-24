@@ -118,8 +118,10 @@ class MainTests(unittest.TestCase):
         """Test that the book appears on its detail page."""
         create_books()
         create_user()
+
         response = self.app.get('/book/1', follow_redirects=True)
         self.assertEqual(response.status_code, 200)
+
         response_text = response.get_data(as_text=True)
         self.assertIn('To Kill a Mockingbird', response_text)
         self.assertIn('July 11, 1960', response_text)
@@ -128,16 +130,18 @@ class MainTests(unittest.TestCase):
 
     def test_book_detail_logged_in(self):
         """Test that the book appears on its detail page."""
-        # TODO: Use helper functions to create books, authors, user, & to log in
+        create_books()
+        create_user()
+        login(self.app, 'me1', 'password')
 
-        # TODO: Make a GET request to the URL /book/1, check to see that the
-        # status code is 200
+        response = self.app.get('/book/1', follow_redirects=True)
+        self.assertEqual(response.status_code, 200)
 
-        # TODO: Check that the response contains the book's title, publish date,
-        # and author's name
-
-        # TODO: Check that the response contains the 'Favorite' button
-        pass
+        response_text = response.get_data(as_text=True)
+        self.assertIn('To Kill a Mockingbird', response_text)
+        self.assertIn('July 11, 1960', response_text)
+        self.assertIn('Harper Lee', response_text)
+        self.assertIn('Favorite', response_text)
 
     def test_update_book(self):
         """Test updating a book."""
