@@ -3,8 +3,10 @@ import unittest
 
 from datetime import date
 
+from flask.wrappers import Response
+
 from books_app import app, db, bcrypt
-from books_app.models import Book, Author, User, Audience
+from books_app.models import Book, Author, Genre, User, Audience
 
 """
 Run these tests with the command:
@@ -190,7 +192,7 @@ class MainTests(unittest.TestCase):
 
     def test_create_book_logged_out(self):
         """
-        Test that the user is redirected when trying to access the create book 
+        Test that the user is redirected when trying to access the create book
         route if not logged in.
         """
         # Set up
@@ -206,36 +208,61 @@ class MainTests(unittest.TestCase):
 
     def test_create_author(self):
         """Test creating an author."""
-        # TODO: Make a POST request to the /create_author route
-
-        # TODO: Verify that the author was updated in the database
-        pass
+        create_books()
+        create_user()
+        login(self.app, 'me1', 'password')
+        post_data = {
+            'name': 'Noam Chomsky',
+            'biography': 'novelist'
+        }
+        self.app.post('/create_author', data=post_data)
+        created_author = Author.query.filter_by(name='Noam Chomsky').one()
+        self.assertIsNotNone(created_author)
+        self.assertEqual(created_author.biography, 'novelist')
 
     def test_create_genre(self):
-        # TODO: Make a POST request to the /create_genre route,
-
-        # TODO: Verify that the genre was updated in the database
-        pass
+        create_user()
+        login(self.app, 'me1', 'password')
+        post_data = {
+            'name': 'fiction'
+        }
+        self.app.post('/create_genre', data=post_data)
+        created_genre = Genre.query.filter_by(name='fiction').one()
+        self.assertIsNotNone(created_genre)
+        self.assertEqual(created_genre.name, 'fiction')
 
     def test_profile_page(self):
-        # TODO: Make a GET request to the /profile/1 route
-
-        # TODO: Verify that the response shows the appropriate user info
-        pass
+        create_user()
+        login(self.app, 'me1', 'password')
+        response = self.app.get('/profile/me1', follow_redirects=True)
+        self.assertEqual(response.status_code, 200)
+        response_text = response.get_data(as_text=True)
+        self.assertIn('You are logged in as me1', response_text)
+        self.assertIn("Welcome to me1's profile.", response_text)
+        self.assertIn("me1's favorite books are:", response_text)
 
     def test_favorite_book(self):
-        # TODO: Login as the user me1
-
-        # TODO: Make a POST request to the /favorite/1 route
-
-        # TODO: Verify that the book with id 1 was added to the user's favorites
-        pass
+        create_books()
+        create_user()
+        login(self.app, 'me1', 'password')
+        post_data = {
+            'book.id': '1'
+        }
+        self.app.post('/favorite/1', data=post_data)
+        book = User.query.filter_by(username='me1').one()
+        self.assertIsNotNone(book.favorite_books)
 
     def test_unfavorite_book(self):
-        # TODO: Login as the user me1, and add book with id 1 to me1's favorites
+        create_books()
+        create_user()
+        login(self.app, 'me1', 'password')
+        post_data = {
+            'book.id': '1'
+        }
+        self.app.post('/favorite/1', data=post_data)
+        book = User.query.filter_by(username='me1').one()
 
-        # TODO: Make a POST request to the /unfavorite/1 route
+        self.app.post('/unfavorite/1', data=post_data)
+        book = User.query.filter_by(username='me1').one()
 
-        # TODO: Verify that the book with id 1 was removed from the user's
-        # favorites
-        pass
+        self.assertNotIn(1, book.favorite_books)
